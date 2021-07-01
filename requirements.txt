@@ -1,3 +1,4 @@
-black
 Django
 djangorestframework
+flake8
+pre-commit
