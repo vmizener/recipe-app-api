@@ -10,5 +10,5 @@ RUN mkdir /app
 WORKDIR /app
 COPY ./app /app
 
-RUN adduser -D user
+RUN useradd -m user
 USER user
