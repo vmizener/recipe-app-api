@@ -88,8 +88,7 @@ class PrivateRecipeApiTests(TestCase):
         recipe = sample_recipe(user=self.user)
         recipe.tags.add(sample_tag(user=self.user))
         recipe.ingredients.add(sample_ingredient(user=self.user))
-        url = detail_url(recipe.id)
-        response = self.client.get(url)
+        response = self.client.get(detail_url(recipe.id))
         serializer = RecipeDetailSerializer(recipe)
         self.assertEqual(response.data, serializer.data)
 
@@ -141,3 +140,35 @@ class PrivateRecipeApiTests(TestCase):
         self.assertEqual(ingredients.count(), 2)
         self.assertIn(ingredient1, ingredients)
         self.assertIn(ingredient2, ingredients)
+
+    def test_partial_update_recipe(self):
+        """Test partially updating a recipe (PATCH request)"""
+        recipe = sample_recipe(user=self.user)
+        recipe.tags.add(sample_tag(user=self.user))
+        new_tag = sample_tag(user=self.user, name="new_tag")
+        payload = {
+            "title": "new_title",
+            "tags": [new_tag.id],
+        }
+        self.client.patch(detail_url(recipe.id), payload)
+        recipe.refresh_from_db()
+        self.assertEqual(recipe.title, payload["title"])
+        tags = recipe.tags.all()
+        self.assertEqual(tags.count(), 1)
+        self.assertIn(new_tag, tags)
+
+    def test_full_update_recipe(self):
+        """Test fully replacing a recipe (PUT request)"""
+        recipe = sample_recipe(user=self.user)
+        recipe.tags.add(sample_tag(user=self.user))
+        payload = {
+            "title": "new_title",
+            "time_minutes": 100,
+            "price": 100.0,
+        }
+        self.client.put(detail_url(recipe.id), payload)
+        recipe.refresh_from_db()
+        for key, value in payload.items():
+            self.assertEqual(value, getattr(recipe, key))
+        tags = recipe.tags.all()
+        self.assertEqual(tags.count(), 0)
