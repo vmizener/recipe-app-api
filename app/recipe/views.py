@@ -59,7 +59,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Return appropriate serializer class"""
         if self.action == "retrieve":
             return serializers.RecipeDetailSerializer
-        elif self.action == "upload-image":
+        elif self.action == "upload_image":
             return serializers.RecipeImageSerializer
         return self.serializer_class
 
@@ -72,9 +72,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Upload an image to a recipe"""
         recipe = self.get_object()
         serializer = self.get_serializer(recipe, data=request.data)
-        print("ok", serializer)
         if serializer.is_valid():
-            print("kk")
             serializer.save()
             return response.Response(
                 serializer.data, status=status.HTTP_200_OK

@@ -36,7 +36,7 @@ def sample_tag(user, name="tag"):
     return Tag.objects.create(user=user, name=name)
 
 
-def sample_recipe(user, ingredients=None, tags=None, **kwargs):
+def sample_recipe(user, **kwargs):
     """Create a sample recipe"""
     defaults = {
         "title": "recipe",
@@ -200,7 +200,6 @@ class RecipeImageUploadTests(TestCase):
             img = Image.new("RGB", (10, 10))
             img.save(ntf, format="JPEG")
             ntf.seek(0)
-            print(url, ntf)
             response = self.client.post(
                 url, {"image": ntf}, format="multipart"
             )
