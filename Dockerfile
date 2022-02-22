@@ -3,7 +3,7 @@ MAINTAINER vmizener
 
 ENV PYTHONUNBUFFERED 1
 
-COPY .flake8 /
+COPY setup.cfg /
 COPY requirements.txt /
 RUN apk add --update --no-cache postgresql-client jpeg-dev
 RUN apk add --update --no-cache --virtual .tmp-build-deps \
